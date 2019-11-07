@@ -31,8 +31,16 @@ exports.up = function(knex) {
   .createTable('animal_zoos', tbl =>{
       tbl.increments()
 
-      tbl.integer('zoo_id').notNullable().unsigned();
-      tbl.integer('animal_id').notNullable().unsigned();
+      tbl.integer('zoo_id').notNullable()
+      .unsigned()
+      .references('animal_id')
+      .onDelete('RESTRICT') // about deleting the primary key table. Could be 'RESTRICT', 'NO ACTION', 'SET NULL', 'CASCADE'?
+      .onUpdate('CASCADE');
+      tbl.integer('animal_id').notNullable()
+      .unsigned()
+      .references('zoo_id')
+      .onDelete('RESTRICT') // about deleting the primary key table. Could be 'RESTRICT', 'NO ACTION', 'SET NULL', 'CASCADE'?
+      .onUpdate('CASCADE');
       tbl.date('from').notNullable();
       tbl.date('to');
 
