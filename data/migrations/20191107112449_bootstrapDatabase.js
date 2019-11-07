@@ -12,7 +12,8 @@ exports.up = function(knex) {
       tbl.string('name', 255).notNullable();
 
       //define our foreign keys
-      tbl.integer('species_id')
+      tbl
+      .integer('species_id')
       .unsigned()
       .refrences('id')
       .inTable('species')
@@ -26,21 +27,29 @@ exports.up = function(knex) {
     tbl.increments();
 
     tbl.string('name', 255).notNullable();
-    tbl.string('address', 255);
+    tbl.string('address', 512);
   })
   .createTable('animal_zoos', tbl =>{
       tbl.increments()
 
-      tbl.integer('zoo_id').notNullable()
+      tbl.string('name', 255).notNullable();
+      tbl
+      .integer('zoo_id')
+      .notNullable()
       .unsigned()
-      .references('animal_id')
+      .references('id')
+      .inTable('zoos')
       .onDelete('RESTRICT') // about deleting the primary key table. Could be 'RESTRICT', 'NO ACTION', 'SET NULL', 'CASCADE'?
       .onUpdate('CASCADE');
-      tbl.integer('animal_id').notNullable()
+      tbl
+      .integer('animal_id')
+      .notNullable()
       .unsigned()
-      .references('zoo_id')
+      .references('id')
+      inTable('animals')
       .onDelete('RESTRICT') // about deleting the primary key table. Could be 'RESTRICT', 'NO ACTION', 'SET NULL', 'CASCADE'?
       .onUpdate('CASCADE');
+
       tbl.date('from').notNullable();
       tbl.date('to');
 
@@ -48,5 +57,8 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  
+  dropTableIfExists('animal_zoos');
+  dropTableIfExists('animals');
+  dropTableIfExists('zoos');
+  dropTableIfExists('species');
 };
